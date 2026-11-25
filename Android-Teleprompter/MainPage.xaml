@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Android_Teleprompter.MainPage">
+
+    <ScrollView>
+        <VerticalStackLayout
+            Spacing="10">
+            <Label
+                Text="○ Remote Disconnected"
+                TextColor="#757575"
+                HorizontalOptions="End"
+                Margin="12,4">
+                <Label.Triggers>
+                    <DataTrigger TargetType="Label"
+                                 Binding="{Binding IsRemoteConnected}"
+                                 Value="True">
+                        <Setter Property="Text" Value="● Remote Connected" />
+                        <Setter Property="TextColor" Value="#4CAF50" />
+                    </DataTrigger>
+                </Label.Triggers>
+            </Label>
+
+            <Grid
+                HorizontalOptions="End">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+            <Button
+                x:Name="CounterBtn"
+                Grid.Column="0"
+                Text="Open Text File" 
+                Command="{Binding OpenFileCommand}"
+                SemanticProperties.Hint="Opens a text file"
+                Margin="0,0,50,0"
+                 />
+
+            <Button
+                x:Name="AutoScrollBtn"
+                Grid.Column="1"
+                Text="{Binding AutoScrollButtonText}"
+                Command="{Binding ToggleAutoScrollCommand}"
+                CommandParameter="{x:Reference TeleprompterScrollView}"
+                SemanticProperties.Hint="Starts or stops automatic scrolling"
+                Margin="0,0,50,0"/>
+            </Grid>
+
+            <Border
+                Margin="12,0"
+                Padding="8"
+                Stroke="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource GoldLight}}"
+                StrokeThickness="2"
+                StrokeShape="RoundRectangle 16">
+                <ScrollView x:Name="TeleprompterScrollView"
+                    HeightRequest="1300"
+                    VerticalScrollBarVisibility="Always">
+                    <Label Text="{Binding LongText}"
+                        FontSize="60"
+                        Padding="10"
+                        Margin="10"
+                        LineBreakMode="WordWrap" />
+                </ScrollView>
+            </Border>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>
