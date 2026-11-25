@@ -1,23 +1,26 @@
-﻿namespace Android_Teleprompter_Remote;
+﻿using AndroidTeleprompterRemote.ViewModels;
+
+namespace Android_Teleprompter_Remote;
 
 public partial class MainPage : ContentPage
 {
-	int count = 0;
+	private readonly MainViewModel _viewModel;
 
-	public MainPage()
+	public MainPage(MainViewModel viewModel)
 	{
 		InitializeComponent();
+		_viewModel = viewModel;
+		BindingContext = viewModel;
 	}
 
-	private void OnCounterClicked(object? sender, EventArgs e)
+	protected override async void OnAppearing()
 	{
-		count++;
+		base.OnAppearing();
+		await _viewModel.OnAppearingAsync();
+	}
 
-		if (count == 1)
-			CounterBtn.Text = $"Clicked {count} time";
-		else
-			CounterBtn.Text = $"Clicked {count} times";
-
-		SemanticScreenReader.Announce(CounterBtn.Text);
+	private async void OnSpeedChanged(object? sender, ValueChangedEventArgs e)
+	{
+		await _viewModel.SpeedChangedAsync(e.NewValue);
 	}
 }
