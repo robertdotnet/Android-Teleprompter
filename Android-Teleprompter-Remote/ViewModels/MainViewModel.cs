@@ -10,6 +10,7 @@ public partial class MainViewModel : ObservableObject
 	private readonly BluetoothLeClientService _bluetoothService;
 	private CancellationTokenSource? _speedDebounce;
 	private bool _isPlaying;
+	private bool _isScanning;
 
 	[ObservableProperty]
 	private bool _isConnected;
@@ -28,6 +29,23 @@ public partial class MainViewModel : ObservableObject
 
 	public async Task OnAppearingAsync()
 	{
+		await ScanForConnectionAsync();
+	}
+
+	[RelayCommand]
+	private async Task ConnectAsync()
+	{
+		await ScanForConnectionAsync();
+	}
+
+	private async Task ScanForConnectionAsync()
+	{
+		if (IsConnected || _isScanning)
+		{
+			return;
+		}
+
+		_isScanning = true;
 		try
 		{
 			await _bluetoothService.StartScanAsync();
@@ -36,6 +54,10 @@ public partial class MainViewModel : ObservableObject
 		{
 			IsConnected = false;
 			System.Diagnostics.Debug.WriteLine($"Unable to start BLE scan: {exception.Message}");
+		}
+		finally
+		{
+			_isScanning = false;
 		}
 	}
 

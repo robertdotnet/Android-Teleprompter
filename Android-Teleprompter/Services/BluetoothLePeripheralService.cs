@@ -249,14 +249,15 @@ public sealed class BluetoothLePeripheralService : IDisposable
         if (newState == ProfileState.Connected)
         {
             _connectedClients[device.Address ?? string.Empty] = device;
-            ClientConnected?.Invoke();
         }
         else if (newState == ProfileState.Disconnected)
         {
             var key = device.Address ?? string.Empty;
             _connectedClients.TryRemove(key, out _);
-            _subscribedClients.TryRemove(key, out _);
-            ClientDisconnected?.Invoke();
+            if (_subscribedClients.TryRemove(key, out _))
+            {
+                ClientDisconnected?.Invoke();
+            }
         }
     }
 
@@ -286,15 +287,14 @@ public sealed class BluetoothLePeripheralService : IDisposable
         var key = device.Address ?? string.Empty;
         if (value is not null && value.SequenceEqual(BluetoothGattDescriptor.EnableNotificationValue!))
         {
-            _subscribedClients[key] = device;
-            if (_connectedClients.ContainsKey(key))
+            if (_connectedClients.ContainsKey(key) && _subscribedClients.TryAdd(key, device))
             {
-                NotifyStatus("connected");
+                ClientConnected?.Invoke();
             }
         }
-        else
+        else if (_subscribedClients.TryRemove(key, out _) && _connectedClients.ContainsKey(key))
         {
-            _subscribedClients.TryRemove(key, out _);
+            ClientDisconnected?.Invoke();
         }
     }
 

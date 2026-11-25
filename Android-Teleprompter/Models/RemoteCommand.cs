@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace AndroidTeleprompter.Models
 {
@@ -13,7 +14,11 @@ namespace AndroidTeleprompter.Models
 
     public sealed record RemoteMessage
     {
+        // Keep the JSON payload within BLE's default 20-byte write limit.
+        [JsonPropertyName("c")]
         public RemoteCommand Command { get; set; }
+
+        [JsonPropertyName("s")]
         public double? SpeedDps { get; set; }
 
         public RemoteMessage(RemoteCommand command, double? speedDps = null)

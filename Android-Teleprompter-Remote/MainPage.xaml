@@ -13,6 +13,9 @@
                 BackgroundColor="#1E1E2E"
                 StrokeThickness="0"
                 Padding="8,10">
+            <Border.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding ConnectCommand}" />
+            </Border.GestureRecognizers>
             <Grid ColumnDefinitions="*,Auto">
                 <Label Text="TELEPROMPT REMOTE"
                        TextColor="White"
@@ -20,14 +23,15 @@
                        FontSize="20"
                        VerticalOptions="Center" />
                 <Label Grid.Column="1"
-                       Text="● Status"
-                       TextColor="#F08080"
-                       FontSize="16"
+                       Text="○ Disconnected"
+                       TextColor="#757575"
+                       FontSize="14"
                        VerticalOptions="Center">
                     <Label.Triggers>
                         <DataTrigger TargetType="Label"
                                      Binding="{Binding IsConnected}"
                                      Value="True">
+                            <Setter Property="Text" Value="● Connected" />
                             <Setter Property="TextColor" Value="#4CAF50" />
                         </DataTrigger>
                     </Label.Triggers>

@@ -505,6 +505,26 @@ public sealed class BluetoothLeClientService : IDisposable
         }
     }
 }
+
+public sealed class BluetoothLePermissions : Permissions.BasePlatformPermission
+{
+    public override (string androidPermission, bool isRuntime)[] RequiredPermissions
+    {
+        get
+        {
+            if (OperatingSystem.IsAndroidVersionAtLeast(31))
+            {
+                return
+                [
+                    ("android.permission.BLUETOOTH_SCAN", true),
+                    ("android.permission.BLUETOOTH_CONNECT", true)
+                ];
+            }
+
+            return [("android.permission.ACCESS_FINE_LOCATION", true)];
+        }
+    }
+}
 #else
 namespace AndroidTeleprompterRemote.Services;
 
